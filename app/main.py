@@ -1,6 +1,9 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 
 load_dotenv()
 
@@ -39,7 +42,21 @@ elif page == "Input":
 
 # Analysis Page (placeholder)
 elif page == "Analysis":
-    st.subheader("Run Discovery Analysis")
-    st.write("This will eventually run LLM-based discovery analysis.")
-    st.write("Raw Input:")
-    st.code(st.session_state.get("raw_input", ""), language="markdown")
+    st.subheader("Run Discovery & RCA Analysis")
+
+    user_input = st.session_state.get("raw_input", "")
+
+    if not user_input:
+        st.warning("Please enter input on the Input page.")
+    else:
+        if st.button("Run Discovery Analysis"):
+            with st.spinner("Generating insights..."):
+                from app.utils.analysis_engine import run_discovery_analysis
+                result = run_discovery_analysis(user_input)
+                st.markdown(result)
+
+        if st.button("Run Root Cause Analysis"):
+            with st.spinner("Analyzing root causes..."):
+                from app.utils.analysis_engine import run_rca_analysis
+                result = run_rca_analysis(user_input)
+                st.markdown(result)
