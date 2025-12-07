@@ -15,7 +15,7 @@ st.set_page_config(
 st.title("🧠 Prodexa AI – Product Discovery & Requirements Intelligence")
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Input", "Analysis"])
+page = st.sidebar.radio("Go to", ["Home", "Input", "Analysis", "BRD/PRD"])
 
 # Home Page
 if page == "Home":
@@ -60,3 +60,22 @@ elif page == "Analysis":
                 from app.utils.analysis_engine import run_rca_analysis
                 result = run_rca_analysis(user_input)
                 st.markdown(result)
+elif page == "BRD/PRD":
+    st.subheader("Generate BRD / PRD Documentation")
+
+    user_input = st.session_state.get("raw_input", "")
+
+    if not user_input:
+        st.warning("Please enter input on the Input page.")
+    else:
+        from app.utils.requirements_generator import generate_brd, generate_prd
+
+        if st.button("Generate BRD"):
+            with st.spinner("Creating BRD..."):
+                brd = generate_brd(user_input)
+                st.markdown(brd)
+        
+        if st.button("Generate PRD"):
+            with st.spinner("Creating PRD..."):
+                prd = generate_prd(user_input)
+                st.markdown(prd)
