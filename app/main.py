@@ -15,7 +15,7 @@ st.set_page_config(
 st.title("🧠 Prodexa AI – Product Discovery & Requirements Intelligence")
 
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Input", "Analysis", "BRD/PRD"])
+page = st.sidebar.radio("Go to", ["Home", "Input", "Analysis", "BRD/PRD", "Backlog & Roadmap"])
 
 # Home Page
 if page == "Home":
@@ -79,3 +79,31 @@ elif page == "BRD/PRD":
             with st.spinner("Creating PRD..."):
                 prd = generate_prd(user_input)
                 st.markdown(prd)
+elif page == "Backlog & Roadmap":
+    st.subheader("User Stories, Prioritization, and Roadmap")
+
+    user_input = st.session_state.get("raw_input", "")
+
+    if not user_input:
+        st.warning("Please enter input on the Input page.")
+    else:
+        from app.utils.product_engine import (
+            generate_user_stories,
+            generate_prioritization,
+            generate_product_roadmap
+        )
+
+        if st.button("Generate User Stories"):
+            with st.spinner("Generating user stories..."):
+                stories = generate_user_stories(user_input)
+                st.markdown(stories)
+
+        if st.button("Generate Prioritization (RICE + MoSCoW)"):
+            with st.spinner("Prioritizing features..."):
+                prioritization = generate_prioritization(user_input)
+                st.markdown(prioritization)
+
+        if st.button("Generate Product Roadmap"):
+            with st.spinner("Building roadmap..."):
+                roadmap = generate_product_roadmap(user_input)
+                st.markdown(roadmap)
